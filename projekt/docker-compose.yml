@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  apache-php:
+    build: ./docker
+    container_name: apache-php
+    ports:
+      - 81:80
+    links:
+      - mariadb
+    depends_on:
+      - mariadb
+    environment:
+      - DB_SERVER=mariadb
+      - DB_USER=root
+      - DB_PASSWD=karaLuch
+      - DB_NAME=magento2
+    networks:
+      - magento
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=karaLuch
+      - MYSQL_DATABASE=magento2
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=karaLuch
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    networks:
+      - magento
+
+networks:
+  magento:
+    driver: bridge
